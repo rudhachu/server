@@ -1,7 +1,7 @@
-import axios from 'axios';
-import * as cheerio from 'cheerio';
+const axios = require('axios');
+const cheerio = require('cheerio');
 
-export async function stickersearch(query) {
+async function stickersearch(query) {
 	return new Promise(resolve => {
 		axios.get(`https://getstickerpack.com/stickers?query=${query}`).then(
 			({ data }) => {
@@ -36,7 +36,7 @@ export async function stickersearch(query) {
 	});
 }
 
-export async function Google(query) {
+async function Google(query) {
 	const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(
 		query,
 	)}`;
@@ -70,7 +70,7 @@ export async function Google(query) {
 	}
 }
 
-export function wallpaper(title, page = 1) {
+function wallpaper(title, page = 1) {
 	return new Promise((resolve, reject) => {
 		axios.get(
 			`https://www.besthdwallpaper.com/search?CurrentPage=${page}&q=${title}`,
@@ -88,7 +88,7 @@ export function wallpaper(title, page = 1) {
 	});
 }
 
-export async function wikipedia(query) {
+async function wikipedia(query) {
 	const searchUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(
 		query,
 	)}&limit=1&format=json`;
@@ -118,7 +118,7 @@ export async function wikipedia(query) {
 	};
 }
 
-export async function mediafire(url) {
+async function mediafire(url) {
 	let query = await axios.get(url);
 	let cher = cheerio.load(query.data);
 	let hasil = [];
@@ -140,7 +140,7 @@ export async function mediafire(url) {
 	return hasil;
 }
 
-export async function Bing(query) {
+async function Bing(query) {
 	try {
 		const response = await axios.get(
 			'https://www.bing.com/search?q=' + encodeURIComponent(query),
@@ -156,7 +156,6 @@ export async function Bing(query) {
 		const results = [];
 		$('#b_results > li.b_algo').each((i, element) => {
 			if (i < 10) {
-				// Limit to 10 results
 				const titleElement = $(element).find('h2 a');
 				const description = $(element)
 					.find('.b_caption p')
@@ -179,7 +178,7 @@ export async function Bing(query) {
 	}
 }
 
-export async function GizChinaNews() {
+async function GizChinaNews() {
 	const url = 'https://www.gizchina.com/category/news/';
 	try {
 		const response = await axios.get(url);
@@ -187,16 +186,14 @@ export async function GizChinaNews() {
 
 		const articles = [];
 
-		// Iterate through each post box to extract titles, links, and descriptions
 		$('.vw-post-box').each((i, el) => {
-			const title = $(el).find('.vw-post-box__title a').text().trim(); // Trim the title to remove extra spaces/newlines
-			const link = $(el).find('.vw-post-box__title a').attr('href'); // Get the link from the <a> tag
+			const title = $(el).find('.vw-post-box__title a').text().trim();
+			const link = $(el).find('.vw-post-box__title a').attr('href');
 			const description = $(el)
 				.find('.vw-post-box__excerpt p')
 				.text()
-				.trim(); // Extract description from the <p> tag
+				.trim();
 
-			// Only add the post if it has a title, link, and description
 			if (title && link && description) {
 				articles.push({ title, link, description });
 			}
@@ -209,7 +206,7 @@ export async function GizChinaNews() {
 	}
 }
 
-export async function Yahoo(query) {
+async function Yahoo(query) {
 	try {
 		const searchUrl = `https://search.yahoo.com/search?p=${encodeURIComponent(
 			query,
@@ -244,20 +241,17 @@ async function fetchForexData(url) {
 		const html = response.data;
 		const $ = cheerio.load(html);
 
-		// Extract header fields
 		const headers = [];
 		$('.upperLine-MSg2GmPp span').each((_, element) => {
 			headers.push($(element).text().trim());
 		});
 
-		// Extract row data
 		const rowsData = [];
 		$(
 			'tr.row-RdUXZpkv.listRow, tr.row-RdUXZpkv.listRow.focusedClass.cursor',
 		).each((_, row) => {
 			const rowData = {};
 
-			// Extract ticker symbol, description, and URL
 			const tickerCell = $(row).find('.tickerCell-GrtoTeat');
 			rowData['Symbol'] = tickerCell
 				.find('a.tickerNameBox-GrtoTeat')
@@ -268,19 +262,17 @@ async function fetchForexData(url) {
 				.text()
 				.trim();
 
-			// Extract additional fields from row cells
 			$(row)
 				.find('td.cell-RLhfr_y4')
 				.each((index, cell) => {
 					const headerName =
-						headers[index] || `Column${index + 1}`; // Fallback for missing headers
+						headers[index] || `Column${index + 1}`;
 					rowData[headerName] = $(cell).text().trim();
 				});
 
 			rowsData.push(rowData);
 		});
 
-		// Rename columns
 		const data = rowsData.map(row => ({
 			Symbol: row.Symbol,
 			Pair: row.Description,
@@ -301,55 +293,55 @@ async function fetchForexData(url) {
 	}
 }
 
-export async function ForexMajor() {
+async function ForexMajor() {
 	return await fetchForexData(
 		'https://www.tradingview.com/markets/currencies/rates-major/',
 	);
 }
 
-export async function ForexMinor() {
+async function ForexMinor() {
 	return await fetchForexData(
 		'https://www.tradingview.com/markets/currencies/rates-minor/',
 	);
 }
 
-export async function ForexExotic() {
+async function ForexExotic() {
 	return await fetchForexData(
 		'https://www.tradingview.com/markets/currencies/rates-exotic/',
 	);
 }
 
-export async function ForexAmericas() {
+async function ForexAmericas() {
 	return await fetchForexData(
 		'https://www.tradingview.com/markets/currencies/rates-americas/',
 	);
 }
 
-export async function ForexEurope() {
+async function ForexEurope() {
 	return await fetchForexData(
 		'https://www.tradingview.com/markets/currencies/rates-europe/',
 	);
 }
 
-export async function ForexAsia() {
+async function ForexAsia() {
 	return await fetchForexData(
 		'https://www.tradingview.com/markets/currencies/rates-asia/',
 	);
 }
 
-export async function ForexPacific() {
+async function ForexPacific() {
 	return await fetchForexData(
 		'https://www.tradingview.com/markets/currencies/rates-pacific/',
 	);
 }
 
-export async function ForexAfrica() {
+async function ForexAfrica() {
 	return await fetchForexData(
 		'https://www.tradingview.com/markets/currencies/rates-africa/',
 	);
 }
 
-export async function FootballNews() {
+async function FootballNews() {
 	try {
 		const response = await axios.get(
 			'https://www.eurosport.com/football/',
@@ -357,111 +349,3 @@ export async function FootballNews() {
 				headers: {
 					'User-Agent':
 						'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-					Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-					'Accept-Language': 'en-US,en;q=0.5',
-					'Accept-Encoding': 'gzip, deflate, br',
-					Connection: 'keep-alive',
-				},
-			},
-		);
-		const html = response.data;
-		const $ = cheerio.load(html);
-
-		const newsItems = [];
-
-		$('div.flex.flex-col').each((index, element) => {
-			const title = $(element)
-				.find('h3.card-hover-underline')
-				.text()
-				.trim();
-			const url = $(element).find('a').attr('href');
-			if (title && url) {
-				newsItems.push({ title, url });
-			}
-		});
-
-		return newsItems;
-	} catch (error) {
-		console.error('Error fetching football news:', error);
-		return null;
-	}
-}
-
-export async function getAirQualityForecast(country, city) {
-	try {
-		const url = `https://www.iqair.com/${country.toLowerCase()}/${city.toLowerCase()}`;
-		const headers = {
-			'User-Agent':
-				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
-		};
-
-		const response = await axios.get(url, { headers });
-		const html = response.data;
-		const $ = cheerio.load(html);
-
-		// Extract subtitles
-		const dailyForecastTitle = $(
-			'.top-info-left .component-card__title',
-		).text();
-		const airQualitySubtitle = $(
-			'.top-info-left .component-card__description',
-		).text();
-
-		// Extract air quality status and main pollutant
-		const aqiValue = $('.aqi-value__estimated').text().trim();
-		const aqiStatus = $('.aqi-text__status').first().text().trim();
-		const mainPollutant = $(
-			'.aqi-overview-footer-container__main-pollutant .aqi-text__status',
-		)
-			.text()
-			.trim();
-		const mainPollutantValue = $('.aqi-text__value')
-			.first()
-			.text()
-			.trim();
-
-		// Extract day-by-day forecast
-		const forecast = [];
-		$('table[title] tbody tr').each((_, row) => {
-			const day = $(row).find('.day-label').text().trim();
-			const aqi = $(row).find('.aqi-chip').text().trim();
-			const rainProbability =
-				$(row).find('.probability-of-rain').text().trim() || 'N/A';
-			const maxTemp = $(row).find('.temp-max').text().trim();
-			const minTemp = $(row).find('.temp-min').text().trim();
-			const windSpeed = $(row).find('.wind-speed').text().trim();
-			const humidity = $(row)
-				.find('.humidity p')
-				.first()
-				.text()
-				.trim();
-
-			if (day && aqi && maxTemp && minTemp && windSpeed) {
-				forecast.push({
-					day,
-					aqi,
-					rainProbability,
-					maxTemp,
-					minTemp,
-					windSpeed,
-					humidity,
-				});
-			}
-		});
-
-		return {
-			dailyForecastTitle,
-			airQualitySubtitle,
-			current: {
-				aqiValue,
-				aqiStatus,
-				mainPollutant,
-				mainPollutantValue,
-			},
-			forecast,
-		};
-	} catch (error) {
-		console.error('Error fetching air quality forecast:', error);
-		throw error;
-	}
-}

@@ -2,7 +2,7 @@
   "name": "rudhra-web-server",
   "version": "1.0.0",
   "description": "Rudhra Web Server with Media API",
-  "type": "module",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -14,9 +14,11 @@
     "@vitalets/google-translate-api": "^9.2.0",
     "axios": "^1.7.7",
     "bitly": "^7.1.2",
+    "body-parser": "^1.20.3",
     "canvas": "^2.11.2",
     "cheerio": "^1.0.0",
     "express": "^4.21.1",
+    "fs-extra": "^10.0.1",
     "fake-useragent": "^1.0.1",
     "file-type": "^19.6.0",
     "fluent-ffmpeg": "^2.1.3",

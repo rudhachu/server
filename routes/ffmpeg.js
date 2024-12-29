@@ -1,7 +1,7 @@
 const express = require('express');
 const { audioToBlackVideo, audioToMp3, flipMedia } = require('../utils/ffmpeg.js');
 const { toSticker } = require('../utils/sticker.js');
-const { getBuffer } = require('xstro-utils');
+const { getBuffer } = require("../lib/functions");
 
 const router = express.Router();
 

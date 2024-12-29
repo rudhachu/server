@@ -3,7 +3,7 @@ const path = require('path');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const PDFDocument = require('pdfkit');
-const { getJson } = require('xstro-utils');
+const { getJson } = require("../lib/functions");
 const { translate } = require('@vitalets/google-translate-api');
 
 const factsPath = path.join('./json/facts.json');

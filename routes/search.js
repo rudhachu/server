@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import {
+const express = require('express');
+const {
 	Bing,
 	FootballNews,
 	ForexAfrica,
@@ -18,9 +18,9 @@ import {
 	wallpaper,
 	wikipedia,
 	Yahoo,
-} from '../utils/search.js';
+} = require('../utils/search.js');
 
-const router = Router();
+const router = express.Router();
 
 router.get('/ssticker', async (req, res) => {
 	try {
@@ -243,4 +243,4 @@ router.get('/airquality', async (req, res) => {
 	}
 });
 
-export default router;
+module.exports = router;

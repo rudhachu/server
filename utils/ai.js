@@ -1,6 +1,6 @@
 'use strict';
 
-import axios from 'axios';
+const axios = require('axios');
 
 /**
  * @typedef {Class} Hercai
@@ -11,7 +11,7 @@ import axios from 'axios';
  * @type {Class}
  * @class
  */
-export class Hercai {
+class Hercai {
 	async question({ model = 'v3', content }) {
 		if (!['v3', 'v3-32k', 'turbo', 'turbo-16k', 'gemini'].some(ind => model == ind)) model = 'v3';
 		if (!content || content == undefined || content == null) throw new Error('Please specify a question!');
@@ -41,3 +41,5 @@ export class Hercai {
 		}
 	}
 }
+
+module.exports = { Hercai };

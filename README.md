@@ -1,2 +1,2 @@
 # server
- Server with MultiMedia API
+Web Server with MultiMedia API

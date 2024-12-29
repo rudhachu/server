@@ -1,8 +1,11 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const fetch = require('node-fetch');
 const { getRandom } = require('./misc.js');
 
+async function getData() {
+    const { default: fetch } = await import('node-fetch');
+    // Use fetch as usual here
+}
 async function instagram(urls, type) {
 	const url = 'https://indownloader.app/request';
 	const data = new URLSearchParams();

@@ -1,8 +1,11 @@
 const jsobfus = require('javascript-obfuscator');
 const cheerio = require('cheerio');
-const fetch = require('node-fetch');
 const axios = require('axios');
 
+async function getData() {
+    const { default: fetch } = await import('node-fetch');
+    // Use fetch as usual here
+}
 async function obfus(query) {
 	return new Promise((resolve, reject) => {
 		try {

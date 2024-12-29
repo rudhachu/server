@@ -1,7 +1,7 @@
 // routes/image.js
 const express = require('express');
 const { convertWebPToJPGBuffer } = require('../utils/convert.js');
-const { getBuffer } = require('xstro-utils');
+const { getBuffer } = require("../lib/functions");
 const router = express.Router();
 
 /**

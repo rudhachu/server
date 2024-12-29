@@ -1,9 +1,9 @@
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
-import { fileTypeFromBuffer } from 'file-type';
-import ffmpeg from 'fluent-ffmpeg';
-import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg';
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
+const { fileTypeFromBuffer } = require('file-type');
+const ffmpeg = require('fluent-ffmpeg');
+const { path: ffmpegPath } = require('@ffmpeg-installer/ffmpeg');
 
 const { writeFileSync, unlinkSync, existsSync, readFileSync, mkdirSync } = fs;
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -156,4 +156,4 @@ async function audioToMp3(inputBuffer) {
 	return convertedBuffer;
 }
 
-export { audioToBlackVideo, flipMedia, audioToMp3 };
+module.exports = { audioToBlackVideo, flipMedia, audioToMp3 };

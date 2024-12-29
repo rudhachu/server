@@ -4,7 +4,11 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs/promises');
 const mime = require('mime-types');
-const FileType = require('file-type');
+
+const fromBuffer = async () => {
+    const module = await import("file-type");
+    return module.fromBuffer;
+};
 
 const router = express.Router();
 

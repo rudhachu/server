@@ -43,7 +43,6 @@ const Router5 = require('./routes/tools');
 const Router6 = require('./routes/ai');
 const Router7 = require('./routes/search');
 const Router8 = require('./routes/anime');
-const Router9 = require('./routes/meme');
 const uploadRouter = require('./routes/_upload');
 
 const app = express();
@@ -73,7 +72,6 @@ app.use('/api', Router5);
 app.use('/api', Router6);
 app.use('/api', Router7);
 app.use('/api', Router8);
-app.use('/api', Router9);
 app.use('/api/upload', uploadRouter);
 
 app.get('/api/users', (_, res) => {

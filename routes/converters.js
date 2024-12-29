@@ -1,7 +1,7 @@
 // routes/image.js
-import express from 'express';
-import { convertWebPToJPGBuffer } from '../utils/convert.js';
-import { getBuffer } from 'xstro-utils';
+const express = require('express');
+const { convertWebPToJPGBuffer } = require('../utils/convert.js');
+const { getBuffer } = require('xstro-utils');
 const router = express.Router();
 
 /**
@@ -9,20 +9,20 @@ const router = express.Router();
  */
 
 router.get('/photo', async (req, res) => {
-	try {
-		const { url } = req.query;
-		if (!imageUrl) {
-			return res.status(400).send('No image URL provided.');
-		}
-		const webpBuffer = await getBuffer(url);
-		const jpgBuffer = await convertWebPToJPGBuffer(webpBuffer);
+    try {
+        const { url } = req.query;
+        if (!url) {
+            return res.status(400).send('No image URL provided.');
+        }
+        const webpBuffer = await getBuffer(url);
+        const jpgBuffer = await convertWebPToJPGBuffer(webpBuffer);
 
-		res.set('Content-Type', 'image/jpeg');
-		res.send(jpgBuffer);
-	} catch (error) {
-		console.error(`Error: ${error.message}`);
-		res.status(500).send('Error converting image.');
-	}
+        res.set('Content-Type', 'image/jpeg');
+        res.send(jpgBuffer);
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).send('Error converting image.');
+    }
 });
 
-export default router;
+module.exports = router;

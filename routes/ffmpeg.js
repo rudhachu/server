@@ -1,7 +1,7 @@
-import express from 'express';
-import { audioToBlackVideo, audioToMp3, flipMedia } from '../utils/ffmpeg.js';
-import { toSticker } from '../utils/sticker.js';
-import { getBuffer } from 'xstro-utils';
+const express = require('express');
+const { audioToBlackVideo, audioToMp3, flipMedia } = require('../utils/ffmpeg.js');
+const { toSticker } = require('../utils/sticker.js');
+const { getBuffer } = require('xstro-utils');
 
 const router = express.Router();
 
@@ -86,4 +86,4 @@ router.get('/mp3', async (req, res) => {
 	}
 });
 
-export default router;
+module.exports = router;

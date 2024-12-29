@@ -1,5 +1,5 @@
-import express from 'express';
-import { Hercai } from '../utils/ai.js';
+const express = require('express');
+const { Hercai } = require('../utils/ai.js');
 
 const router = express.Router();
 const herc = new Hercai();
@@ -14,4 +14,4 @@ router.get('/hericai', async (req, res) => {
     }
 });
 
-export default router;
+module.exports = router;

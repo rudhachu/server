@@ -1,7 +1,7 @@
-import jsobfus from 'javascript-obfuscator';
-import * as cheerio from 'cheerio';
-import fetch from 'node-fetch';
-import axios from 'axios';
+const jsobfus = require('javascript-obfuscator');
+const cheerio = require('cheerio');
+const fetch = require('node-fetch');
+const axios = require('axios');
 
 async function obfus(query) {
 	return new Promise((resolve, reject) => {
@@ -18,7 +18,7 @@ async function obfus(query) {
 			});
 			const result = {
 				status: 200,
-				author: `Astro`,
+				author: `Rudhra`,
 				result: obfuscationResult.getObfuscatedCode(),
 			};
 			resolve(result);
@@ -71,7 +71,6 @@ async function ttp(text) {
 	}
 }
 
-
 async function githubstalk(user) {
 	return new Promise((resolve, reject) => {
 		axios.get('https://api.github.com/users/' + user).then(({ data }) => {
@@ -97,8 +96,8 @@ async function githubstalk(user) {
 				updated_at: data.updated_at,
 			};
 			resolve(hasil);
-		});
+		}).catch(reject);
 	});
 }
 
-export { obfus, ttp, githubstalk };
+module.exports = { obfus, ttp, githubstalk };

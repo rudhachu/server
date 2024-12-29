@@ -1,6 +1,6 @@
-import { createCanvas, loadImage } from 'canvas';
-import fs from 'fs';
-import path from 'path';
+const { createCanvas, loadImage } = require('canvas');
+const fs = require('fs');
+const path = require('path');
 
 // Function to get all PNG files from media directory
 function getAvailableTemplates(mediaFolder = './media') {
@@ -63,4 +63,4 @@ async function addTextToTweet(inputText, templateName) {
   return canvas.toBuffer('image/png');
 }
 
-export { addTextToTweet, getAvailableTemplates };
+module.exports = { addTextToTweet, getAvailableTemplates };

@@ -1,5 +1,5 @@
-import express from 'express';
-import { addTextToTweet, getAvailableTemplates } from '../utils/meme.js';
+const express = require('express');
+const { addTextToTweet, getAvailableTemplates } = require('../utils/meme.js');
 
 const router = express.Router();
 
@@ -51,4 +51,4 @@ router.get('/meme/:template', async (req, res) => {
 	}
 });
 
-export default router;
+module.exports = router;

@@ -1,10 +1,10 @@
-import fs from 'fs';
-import sharp from 'sharp';
-import path from 'path';
-import ffmpeg from 'fluent-ffmpeg';
-import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
-import { fileTypeFromBuffer } from 'file-type';
-import { Sticker } from 'wa-sticker-formatter';
+const fs = require('fs');
+const sharp = require('sharp');
+const path = require('path');
+const ffmpeg = require('fluent-ffmpeg');
+const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
+const { fileTypeFromBuffer } = require('file-type');
+const { Sticker } = require('wa-sticker-formatter');
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
@@ -16,7 +16,7 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
  * @param {string} author - Sticker author name.
  * @returns {Promise<Buffer>} - Sticker WebP buffer.
  */
-export const img2webp = async (media, pack, author) => {
+const img2webp = async (media, pack, author) => {
 	const webpBuffer = await sharp(media)
 		.resize({
 			width: 512,
@@ -41,12 +41,22 @@ export const img2webp = async (media, pack, author) => {
  * @param {Buffer} media - Video buffer.
  * @returns {Promise<Buffer>} - Sticker WebP buffer.
  */
-export const mp42webp = async media => {
+const mp42webp = async (media) => {
 	const tmpFileIn = path.join(`${Date.now()}.mp4`);
 	const tmpFileOut = path.join(`${Date.now()}.webp`);
 	fs.writeFileSync(tmpFileIn, media);
 	await new Promise((resolve, reject) => {
-		ffmpeg(tmpFileIn).outputOptions([`-t 8`, `-vf fps=15,scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=black@0`, '-loop 0', '-pix_fmt yuva420p']).toFormat('webp').on('end', resolve).on('error', reject).save(tmpFileOut);
+		ffmpeg(tmpFileIn)
+			.outputOptions([
+				`-t 8`,
+				`-vf fps=15,scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=black@0`,
+				'-loop 0',
+				'-pix_fmt yuva420p',
+			])
+			.toFormat('webp')
+			.on('end', resolve)
+			.on('error', reject)
+			.save(tmpFileOut);
 	});
 	const buffer = fs.readFileSync(tmpFileOut);
 	fs.unlinkSync(tmpFileIn);
@@ -62,7 +72,7 @@ export const mp42webp = async media => {
  * @param {string} author - Sticker author name.
  * @returns {Promise<Buffer>} - Sticker WebP buffer.
  */
-export const toSticker = async (buffer, pack, author) => {
+const toSticker = async (buffer, pack, author) => {
 	const fileType = await fileTypeFromBuffer(buffer);
 	const { mime } = fileType;
 	let res;
@@ -74,4 +84,10 @@ export const toSticker = async (buffer, pack, author) => {
 		throw new Error('Only images and videos are supported');
 	}
 	return res;
+};
+
+module.exports = {
+	img2webp,
+	mp42webp,
+	toSticker,
 };

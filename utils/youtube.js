@@ -1,4 +1,4 @@
-import axios from 'axios';
+const axios = require('axios');
 
 const SaveTube = {
 	qualities: {
@@ -86,10 +86,12 @@ const SaveTube = {
 	},
 };
 
-export async function savetubemp3(url) {
+async function savetubemp3(url) {
 	return SaveTube.mp3(url);
 }
 
-export async function savetubemp4(url) {
+async function savetubemp4(url) {
 	return SaveTube.mp4(url);
 }
+
+module.exports = { savetubemp3, savetubemp4 };

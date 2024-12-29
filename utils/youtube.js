@@ -14,36 +14,8 @@ const SaveTube = {
 		'Content-Type': 'application/json',
 	},
 
-	cdnList: Array.from({ length: 11 }, (_, i) => `cdn${i + 51}.savetube.su`), // List of CDNs from cdn51.savetube.su to cdn61.savetube.su
-
-	// Check if the given CDN is available with retry mechanism
-	async isCdnAvailable(cdnUrl, retries = 3) {
-		try {
-			console.log(`Checking availability of CDN: ${cdnUrl}`);
-			const response = await axios.get(`https://${cdnUrl}/ping`, { timeout: 5000 });
-			console.log(`CDN ${cdnUrl} is available: ${response.status}`);
-			return response.status === 200;
-		} catch (error) {
-			if (retries > 0) {
-				console.log(`Retrying CDN: ${cdnUrl}, ${retries} attempts left.`);
-				return this.isCdnAvailable(cdnUrl, retries - 1);
-			}
-			console.error(`Error checking ${cdnUrl}: ${error.message}`);
-			return false; // If retries are exhausted, consider the CDN unavailable
-		}
-	},
-
-	// Find an available CDN
-	async findAvailableCdn() {
-		for (const cdn of this.cdnList) {
-			const available = await this.isCdnAvailable(cdn);
-			if (available) {
-				console.log(`Using CDN: ${cdn}`);
-				return cdn;
-			}
-		}
-		console.error('No available CDN found');
-		throw new Error('No available CDN found');
+	cdn() {
+		return Math.floor(Math.random() * 11) + 51;
 	},
 
 	checkQuality(type, qualityIndex) {
@@ -55,14 +27,14 @@ const SaveTube = {
 	async fetchData(url, cdn, body = {}) {
 		const headers = {
 			...this.headers,
-			authority: cdn,
+			authority: `cdn${cdn}.savetube.su`,
 		};
 
 		try {
 			const response = await axios.post(url, body, { headers });
 			return response.data;
 		} catch (error) {
-			console.error(`Error fetching data from ${cdn}: ${error.message}`);
+			console.error(error);
 			throw error;
 		}
 	},
@@ -76,17 +48,17 @@ const SaveTube = {
 		const quality = SaveTube.qualities[type][qualityIndex];
 		if (!type) throw new Error('❌ Tipe tidak valid. Pilih 1 untuk audio atau 2 untuk video.');
 		SaveTube.checkQuality(type, qualityIndex);
+		const cdnNumber = SaveTube.cdn();
+		const cdnUrl = `cdn${cdnNumber}.savetube.su`;
 
-		const cdnUrl = await SaveTube.findAvailableCdn(); // Get an available CDN
-
-		const videoInfo = await SaveTube.fetchData(`https://${cdnUrl}/info`, cdnUrl, { url: link });
+		const videoInfo = await SaveTube.fetchData(`https://${cdnUrl}/info`, cdnNumber, { url: link });
 		const badi = {
 			downloadType: type,
 			quality: quality,
 			key: videoInfo.data.key,
 		};
 
-		const dlRes = await SaveTube.fetchData(SaveTube.dLink(cdnUrl, type, quality, videoInfo.data.key), cdnUrl, badi);
+		const dlRes = await SaveTube.fetchData(SaveTube.dLink(cdnUrl, type, quality, videoInfo.data.key), cdnNumber, badi);
 
 		return {
 			link: dlRes.data.downloadUrl,

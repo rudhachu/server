@@ -1,7 +1,7 @@
-import axios from 'axios';
-import * as cheerio from 'cheerio';
-import fetch from 'node-fetch';
-import { getRandom } from './misc.js';
+const axios = require('axios');
+const cheerio = require('cheerio');
+const fetch = require('node-fetch');
+const { getRandom } = require('./misc.js');
 
 async function instagram(urls, type) {
 	const url = 'https://indownloader.app/request';
@@ -185,4 +185,4 @@ async function facebook(url) {
 	}
 }
 
-export { instagram, twitter, tiktok, gdrivedl, facebook };
+module.exports = { instagram, twitter, tiktok, gdrivedl, facebook };

@@ -1,10 +1,10 @@
-import fs from 'fs';
-import path from 'path';
-import axios from 'axios';
-import * as cheerio from 'cheerio';
-import PDFDocument from 'pdfkit';
-import { getJson } from 'xstro-utils';
-import { translate } from '@vitalets/google-translate-api';
+const fs = require('fs');
+const path = require('path');
+const axios = require('axios');
+const cheerio = require('cheerio');
+const PDFDocument = require('pdfkit');
+const { getJson } = require('xstro-utils');
+const { translate } = require('@vitalets/google-translate-api');
 
 const factsPath = path.join('./json/facts.json');
 const quotesPath = path.join('./json/quotes.json');
@@ -81,10 +81,8 @@ async function fancy(text) {
 }
 
 async function tinyurl(url) {
-	const response = await fetch(
-		`https://tinyurl.com/api-create.php?url=${url}`,
-	);
-	return await response.text();
+	const response = await axios.get(`https://tinyurl.com/api-create.php?url=${url}`);
+	return response.data;
 }
 
 const solveMath = expression => {
@@ -137,7 +135,8 @@ const trt = async (sentence, targetLang) => {
 		throw new Error(`Translation failed: ${error.message}`);
 	}
 };
-export {
+
+module.exports = {
 	textToPdf,
 	facts,
 	quotes,

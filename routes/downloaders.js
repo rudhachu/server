@@ -1,6 +1,6 @@
-import express from 'express';
-import { savetubemp3, savetubemp4 } from '../utils/youtube.js';
-import { facebook, instagram, tiktok, twitter } from '../utils/downloader.js';
+const express = require('express');
+const { savetubemp3, savetubemp4 } = require('../utils/youtube.js');
+const { facebook, instagram, tiktok, twitter } = require('../utils/downloader.js');
 const router = express.Router();
 
 router.get('/ytmp3', async (req, res) => {
@@ -28,6 +28,7 @@ router.get('/ytmp4', async (req, res) => {
 		res.status(400).json({ error: error.message });
 	}
 });
+
 router.get('/instagram', async (req, res) => {
 	try {
 		if (!req.query || !req.query.url) {
@@ -80,4 +81,4 @@ router.get('/tiktok', async (req, res) => {
 	}
 });
 
-export default router;
+module.exports = router;

@@ -14,8 +14,26 @@ const SaveTube = {
 		'Content-Type': 'application/json',
 	},
 
-	cdn() {
-		return Math.floor(Math.random() * 11) + 51;
+	cdnList: Array.from({ length: 11 }, (_, i) => `cdn${i + 51}.savetube.su`), // List of CDNs from cdn51.savetube.su to cdn61.savetube.su
+
+	// Check if the given CDN is available
+	async isCdnAvailable(cdnUrl) {
+		try {
+			const response = await axios.get(`https://${cdnUrl}/ping`); // Simple GET request to check CDN availability
+			return response.status === 200;
+		} catch (error) {
+			return false; // Return false if CDN is unavailable
+		}
+	},
+
+	// Find an available CDN
+	async findAvailableCdn() {
+		for (const cdn of this.cdnList) {
+			if (await this.isCdnAvailable(cdn)) {
+				return cdn;
+			}
+		}
+		throw new Error('No available CDN found');
 	},
 
 	checkQuality(type, qualityIndex) {
@@ -27,14 +45,14 @@ const SaveTube = {
 	async fetchData(url, cdn, body = {}) {
 		const headers = {
 			...this.headers,
-			authority: `cdn${cdn}.savetube.su`,
+			authority: cdn,
 		};
 
 		try {
 			const response = await axios.post(url, body, { headers });
 			return response.data;
 		} catch (error) {
-			console.error(error);
+			console.error(`Error fetching data from ${cdn}: ${error.message}`);
 			throw error;
 		}
 	},
@@ -48,17 +66,17 @@ const SaveTube = {
 		const quality = SaveTube.qualities[type][qualityIndex];
 		if (!type) throw new Error('❌ Tipe tidak valid. Pilih 1 untuk audio atau 2 untuk video.');
 		SaveTube.checkQuality(type, qualityIndex);
-		const cdnNumber = SaveTube.cdn();
-		const cdnUrl = `cdn${cdnNumber}.savetube.su`;
 
-		const videoInfo = await SaveTube.fetchData(`https://${cdnUrl}/info`, cdnNumber, { url: link });
+		const cdnUrl = await SaveTube.findAvailableCdn(); // Get an available CDN
+
+		const videoInfo = await SaveTube.fetchData(`https://${cdnUrl}/info`, cdnUrl, { url: link });
 		const badi = {
 			downloadType: type,
 			quality: quality,
 			key: videoInfo.data.key,
 		};
 
-		const dlRes = await SaveTube.fetchData(SaveTube.dLink(cdnUrl, type, quality, videoInfo.data.key), cdnNumber, badi);
+		const dlRes = await SaveTube.fetchData(SaveTube.dLink(cdnUrl, type, quality, videoInfo.data.key), cdnUrl, badi);
 
 		return {
 			link: dlRes.data.downloadUrl,

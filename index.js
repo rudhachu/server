@@ -29,21 +29,22 @@
  * @constant {WebSocketServer} wss - WebSocket server instance
  * @constant {Set} connectedClients - Set of connected WebSocket clients
  */
-import express from 'express';
-import path from 'path';
-import bodyParser from 'body-parser';
-import { WebSocketServer } from 'ws';
-import { createServer } from 'http';
-import Router1 from './routes/base.js';
-import Router2 from './routes/ffmpeg.js';
-import Router3 from './routes/downloaders.js';
-import Router4 from './routes/converters.js';
-import Router5 from './routes/tools.js';
-import Router6 from './routes/ai.js';
-import Router7 from './routes/search.js';
-import Router8 from './routes/anime.js';
-import Router9 from './routes/meme.js';
-import uploadRouter from './routes/_upload.js';
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const { WebSocketServer } = require('ws');
+const { createServer } = require('http');
+
+const Router1 = require('./routes/base');
+const Router2 = require('./routes/ffmpeg');
+const Router3 = require('./routes/downloaders');
+const Router4 = require('./routes/converters');
+const Router5 = require('./routes/tools');
+const Router6 = require('./routes/ai');
+const Router7 = require('./routes/search');
+const Router8 = require('./routes/anime');
+const Router9 = require('./routes/meme');
+const uploadRouter = require('./routes/_upload');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -56,11 +57,11 @@ const wss = new WebSocketServer({ server });
 const connectedClients = new Set();
 
 wss.on('connection', ws => {
-	connectedClients.add(ws);
+    connectedClients.add(ws);
 
-	ws.on('close', () => {
-		connectedClients.delete(ws);
-	});
+    ws.on('close', () => {
+        connectedClients.delete(ws);
+    });
 });
 
 app.use(express.json());
@@ -76,13 +77,13 @@ app.use('/api', Router9);
 app.use('/api/upload', uploadRouter);
 
 app.get('/api/users', (_, res) => {
-	res.json({ users: connectedClients.size });
+    res.json({ users: connectedClients.size });
 });
 
 app.get('/', (_, res) => {
-	res.sendFile(path.join(process.cwd(), 'web', 'index.html'));
+    res.sendFile(path.join(process.cwd(), 'web', 'index.html'));
 });
 
 server.listen(port, () => {
-	console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}`);
 });

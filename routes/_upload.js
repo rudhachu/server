@@ -1,10 +1,10 @@
-import express from 'express';
-import multer from 'multer';
-import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
-import fs from 'fs/promises';
-import mime from 'mime-types';
-import * as FileType from 'file-type';
+const express = require('express');
+const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+const fs = require('fs/promises');
+const mime = require('mime-types');
+const FileType = require('file-type');
 
 const router = express.Router();
 
@@ -175,4 +175,4 @@ router.get('/raw/:filename/:originalname', async (req, res) => {
 	res.sendFile(path.join(process.cwd(), 'uploads', filename));
 });
 
-export default router;
+module.exports = router;

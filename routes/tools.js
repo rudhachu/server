@@ -1,5 +1,5 @@
-import express from 'express';
-import { githubstalk, obfus, ttp } from '../utils/tools.js';
+const express = require('express');
+const { githubstalk, obfus, ttp } = require('../utils/tools.js');
 
 const router = express.Router();
 
@@ -48,4 +48,4 @@ router.get('/gitstalk', async (req, res) => {
 	}
 });
 
-export default router;
+module.exports = router;

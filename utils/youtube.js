@@ -16,23 +16,33 @@ const SaveTube = {
 
 	cdnList: Array.from({ length: 11 }, (_, i) => `cdn${i + 51}.savetube.su`), // List of CDNs from cdn51.savetube.su to cdn61.savetube.su
 
-	// Check if the given CDN is available
-	async isCdnAvailable(cdnUrl) {
+	// Check if the given CDN is available with retry mechanism
+	async isCdnAvailable(cdnUrl, retries = 3) {
 		try {
-			const response = await axios.get(`https://${cdnUrl}/ping`); // Simple GET request to check CDN availability
+			console.log(`Checking availability of CDN: ${cdnUrl}`);
+			const response = await axios.get(`https://${cdnUrl}/ping`, { timeout: 5000 });
+			console.log(`CDN ${cdnUrl} is available: ${response.status}`);
 			return response.status === 200;
 		} catch (error) {
-			return false; // Return false if CDN is unavailable
+			if (retries > 0) {
+				console.log(`Retrying CDN: ${cdnUrl}, ${retries} attempts left.`);
+				return this.isCdnAvailable(cdnUrl, retries - 1);
+			}
+			console.error(`Error checking ${cdnUrl}: ${error.message}`);
+			return false; // If retries are exhausted, consider the CDN unavailable
 		}
 	},
 
 	// Find an available CDN
 	async findAvailableCdn() {
 		for (const cdn of this.cdnList) {
-			if (await this.isCdnAvailable(cdn)) {
+			const available = await this.isCdnAvailable(cdn);
+			if (available) {
+				console.log(`Using CDN: ${cdn}`);
 				return cdn;
 			}
 		}
+		console.error('No available CDN found');
 		throw new Error('No available CDN found');
 	},
 

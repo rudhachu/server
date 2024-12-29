@@ -1,7 +1,7 @@
-import axios from 'axios';
-import * as cheerio from 'cheerio';
+const axios = require('axios');
+const cheerio = require('cheerio');
 
-export async function AnimeNews() {
+async function AnimeNews() {
 	try {
 		const response = await axios.get('https://aniverse-mag.com/');
 		const html = response.data;
@@ -21,3 +21,5 @@ export async function AnimeNews() {
 		return null;
 	}
 }
+
+module.exports = { AnimeNews };
